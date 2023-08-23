@@ -85,6 +85,22 @@ namespace RounderRectBaker
             RenderTexture.active = prev;
         }
 
+        private void SaveTexture(ref RenderTexture texture)
+        {
+            var prev = RenderTexture.active;
+            RenderTexture.active = texture;
+            var texture2d = new Texture2D(texture.width, texture.height, TextureFormat.ARGB32, false);
+            texture2d.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
+            texture2d.Apply();
+            RenderTexture.active = prev;
+
+            string filePath = EditorUtility.SaveFilePanel("Save Texture", "", "RoundedRect", "png");
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                System.IO.File.WriteAllBytes(filePath, texture2d.EncodeToPNG());
+            }
+        }
+
         private void OnGUI()
         {
             imageSize = EditorGUILayout.Vector2IntField("Image Size", imageSize);
@@ -118,6 +134,11 @@ namespace RounderRectBaker
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField("Preview:");
                 GUILayout.Label(renderTexture);
+            }
+
+            if (GUILayout.Button("Save Texture"))
+            {
+                SaveTexture(ref renderTexture);
             }
         }
     }
