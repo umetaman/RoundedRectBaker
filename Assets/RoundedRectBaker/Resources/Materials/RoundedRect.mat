@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: RoundedRect
   m_Shader: {fileID: 4800000, guid: 4ba79109e2a1c6b429bb59db3aa22bfa, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _RECT_TYPE_BORDER
   m_InvalidKeywords:
   - _BUILTIN_SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
@@ -70,7 +71,7 @@ Material:
     - _BUILTIN_ZTest: 4
     - _BUILTIN_ZWrite: 0
     - _BUILTIN_ZWriteControl: 0
-    - _BorderRadius: 0.4102
+    - _BorderRadius: 0.1306
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -83,15 +84,16 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RECT_TYPE: 1
     - _SmoothnessTextureChannel: 0
-    - _Softness: 0.0075
+    - _Softness: 0.0069
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _Width: 0
+    - _Width: 0.0063
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Ratio: {r: 1, g: 1, b: 0, a: 0}
+    - _Ratio: {r: 0.82, g: 0.82, b: 0, a: 0}
   m_BuildTextureStacks: []

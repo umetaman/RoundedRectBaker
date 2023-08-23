@@ -8,6 +8,8 @@ Shader "RoundedRectBaker/RoundedRect"
         _Softness("Softness", Range(0, 1.0)) = 0.01
         _Color("Color", Color) = (1, 1, 1, 1)
         _Ratio("Ratio", Vector) = (1, 1, 0, 0)
+        [KeywordEnum(FILL,BORDER)]
+        _RECT_TYPE("Mode", Float) = 0
     }
     SubShader
     {
@@ -19,6 +21,7 @@ Shader "RoundedRectBaker/RoundedRect"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile _RECT_TYPE_FILL _RECT_TYPE_BORDER
 
             #include "UnityCG.cginc"
 
@@ -40,6 +43,7 @@ Shader "RoundedRectBaker/RoundedRect"
             float _Softness;
             float4 _Color;
             float2 _Ratio;
+            float _RECT_TYPE;
 
             float2 UVToCenterPosition(float2 uv) {
                 return uv - (_Ratio / 2.0) + (_Ratio * 0.5 + float2(-0.5, -0.5));
@@ -66,7 +70,7 @@ Shader "RoundedRectBaker/RoundedRect"
             fixed4 frag (v2f i) : SV_Target
             {
                 float d = RoundedRectDistance(UVToCenterPosition(i.uv), MarginToRectSize(), _BorderRadius);
-                float distance = smoothstep(_Width, _Width + _Softness, d);
+                float distance = smoothstep(_Width, _Width + _Softness, _RECT_TYPE == 0.0 ? d : clamp(abs(d), 0.0, 1.0));
                 return float4(_Color.rgb, 1.0 - distance);
             }
             ENDCG

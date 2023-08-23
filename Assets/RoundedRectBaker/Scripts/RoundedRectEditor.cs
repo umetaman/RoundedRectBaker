@@ -21,11 +21,11 @@ namespace RounderRectBaker
         public static readonly int PropIdSoftness = Shader.PropertyToID("_Softness");
         public static readonly int PropIdColor = Shader.PropertyToID("_Color");
         public static readonly int PropIdRatio = Shader.PropertyToID("_Ratio");
+        public static readonly int PropIdRectType = Shader.PropertyToID("_RECT_TYPE");
 
         private static RoundedRectEditor editor = null;
 
-        private Material materialFill = null;
-        private Material materialBorder = null;
+        private Material material = null;
 
         private RectType rectType = RectType.Fill;
         private Vector2Int imageSize = new Vector2Int(512, 512);
@@ -50,12 +50,7 @@ namespace RounderRectBaker
 
         private void Init()
         {
-            materialFill = Resources.Load<Material>("Materials/RoundedRect");
-            materialBorder = Resources.Load<Material>("Materials/RoundedRectBorder");
-            
-            Debug.Assert(materialFill != null);
-            Debug.Assert(materialBorder != null);
-
+            material = Resources.Load<Material>("Materials/RoundedRect");
             CreateBuffer();
         }
 
@@ -67,17 +62,6 @@ namespace RounderRectBaker
 
         private Material UpdateMaterial(RectType rectType)
         {
-            Material material = null;
-            switch (rectType)
-            {
-                case RectType.Fill:
-                    material = materialFill;
-                    break;
-                case RectType.Border:
-                    material = materialBorder;
-                    break;
-            }
-
             if(material == null)
             {
                 throw new System.Exception();
@@ -89,6 +73,7 @@ namespace RounderRectBaker
             material.SetFloat(PropIdSoftness, softness);
             material.SetColor(PropIdColor, color);
             material.SetVector(PropIdRatio, ratio);
+            material.SetFloat(PropIdRectType, (int)rectType);
 
             return material;
         }
@@ -96,10 +81,7 @@ namespace RounderRectBaker
         private void BakeTexture(ref RenderTexture dstTexture, ref Material material)
         {
             var prev = RenderTexture.active;
-            //RenderTexture.active = dstTexture;
-            Debug.Log(material.name);
-            Graphics.Blit(Resources.Load<Texture2D>("shigotoneko_chikisho"), dstTexture, material);
-            RenderTexture.active = dstTexture;
+            Graphics.Blit(Texture2D.whiteTexture, dstTexture, material);
             RenderTexture.active = prev;
         }
 
@@ -114,8 +96,16 @@ namespace RounderRectBaker
 
             rectType = (RectType)EditorGUILayout.EnumPopup("Rect Type", rectType);
             borderRadius = EditorGUILayout.Slider("Border Radius", borderRadius, 0.0f, 0.5f);
-            width = EditorGUILayout.Slider("Width", width, 0.0f, 0.5f);
-            margin = EditorGUILayout.Slider("Margin", margin, 0.0f, 0.5f);
+            if (rectType == RectType.Border)
+            {
+                width = EditorGUILayout.Slider("Width", width, 0.0f, 0.5f);
+                margin = EditorGUILayout.Slider("Margin", margin, 0.0f, 0.5f);
+            }
+            else
+            {
+                width = 0f;
+                margin = 0f;
+            }
             softness = EditorGUILayout.Slider("Softness", softness, 0.0f, 0.5f);
             color = EditorGUILayout.ColorField("Color", color);
             ratio = EditorGUILayout.Vector2Field("Ratio", ratio);
